@@ -1,0 +1,49 @@
+{
+ "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Loyalty Inquiry Data Power Service Service Response Schema",
+    "description": "Inquires about loyalty data for a particular Account Number",
+    "$id": "schema:loyalty_inquiry",
+    "required": ["transactionId","statusCode","pointsLeft","totalEarnedPoints","totalRedeemedPoints","totalLostPoints","totalExpiredPoints","redemptionTransLimit"],
+    "properties": {
+       "transactionId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 50
+        },
+       "statusCode": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1
+       },
+       "pointsLeft": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 50
+       },
+       "totalEarnedPoints": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 50
+       }, 
+       "totalRedeemedPoints": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 50
+       }, 
+        "totalLostPoints": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 50
+       },
+       "totalExpiredPoints": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 50
+       },
+       "redemptionTransLimit": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 50
+       }
+   }
+}

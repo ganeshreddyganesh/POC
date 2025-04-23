@@ -1,0 +1,33 @@
+services:
+  redis-mobily:
+    image: redis/redis-stack-server:latest  
+    networks:
+      - internal 
+    ports:
+      - 6380:6380   
+    restart: unless-stopped
+  keycloak-mobily:
+    image: quay.io/keycloak/keycloak:23.0.6   
+    command: start-dev
+    networks:
+      - internal 
+    ports:
+      - 8080:8080
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=mobily12345         
+    restart: unless-stopped
+
+  loyaltyservices:
+    image: loyalty-services:4.0
+    networks:
+      - internal 
+    depends_on:
+      - keycloak-mobily
+      - redis-mobily
+    ports:
+      - 8081:8081
+    restart: unless-stopped
+networks:
+   internal:
+   
