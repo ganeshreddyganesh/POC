@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoyaltyInfoDPAPIImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">loyalty-service</a> &gt; <a href="index.source.html" class="el_package">com.mobily.loyalty.service.web.api</a> &gt; <span class="el_source">LoyaltyInfoDPAPIImpl.java</span></div><h1>LoyaltyInfoDPAPIImpl.java</h1><pre class="source lang-java linenums">package com.mobily.loyalty.service.web.api;
+
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.Produces;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mobily.loyalty.service.constants.APIConstants;
+import com.mobily.loyalty.service.constants.MessageConstants;
+import com.mobily.loyalty.service.constants.ServiceConstants;
+import com.mobily.loyalty.service.datapower.model.LoyaltyInquiryRequest;
+import com.mobily.loyalty.service.datapower.model.LoyaltyInquiryResponse;
+import com.mobily.loyalty.service.exceptions.InternalServerException;
+import com.mobily.loyalty.service.exceptions.InvalidRequestException;
+import com.mobily.loyalty.service.exceptions.ResourceNotFoundException;
+import com.mobily.loyalty.service.exceptions.UnauthorizedAccessException;
+import com.mobily.loyalty.service.model.LoyaltyInfoRequest;
+import com.mobily.loyalty.service.model.LoyaltyInfoResponse;
+import com.mobily.loyalty.service.model.MasterResponse;
+import com.mobily.loyalty.service.model.Status;
+import com.mobily.loyalty.service.resourcebundle.Locales;
+import com.mobily.loyalty.service.resourcebundle.LocalizedMessageService;
+import com.mobily.loyalty.service.services.LoyaltyInfoService;
+import com.mobily.loyalty.service.services.ServiceResponseBuilder;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * Loyalty Infor Service API
+ * @author ACLDigital
+ *
+ */
+@RestController
+<span class="nc" id="L47">@Slf4j</span>
+<span class="nc" id="L48">public class LoyaltyInfoDPAPIImpl implements ILoyaltyInfoDPAPI{</span>
+
+	@Autowired
+	private LocalizedMessageService localizedMessageService;
+
+	/** Response service builder reference **/
+	@Autowired
+	private ServiceResponseBuilder responseBuilder;
+
+	/** Login service reference **/
+	@Autowired
+	private LoyaltyInfoService loyaltyInfoService;
+
+	/** cem key **/
+	private final static String CEM_KEY=&quot;cem-key&quot;;
+
+	/** journey name **/
+	private final static String JOURNEY=&quot;loyalty&quot;;
+
+	/** journey operation name **/
+	private final static String JOURNEY_OPERATION=&quot;loyalty-inquiry&quot;;
+
+	/** journey name **/
+<span class="nc" id="L71">	private static int expectedResponseCode = 200;</span>
+
+   /**
+	 * queries for loyalty information - This is public version
+	 * @param msidsn
+	 * @return
+	 * @throws InternalServerException
+	 * @throws InvalidRequestException
+	 * @throws UnauthorizedAccessException
+	 * @throws ResourceNotFoundException
+	 * @throws Exception
+	 */
+  @Override
+  public  String getLoyaltyInfoDPPub(@RequestBody(required = true) LoyaltyInquiryRequest loyaltyInquiryRequest,HttpServletRequest httpServletRequest) throws InternalServerException,InvalidRequestException,UnauthorizedAccessException,ResourceNotFoundException,Exception{
+
+<span class="nc" id="L86">	   ObjectMapper objectMapper = new ObjectMapper();</span>
+<span class="nc" id="L87">	   log.info(&quot; Request from Orchetration Layer is &quot;+objectMapper.writeValueAsString(loyaltyInquiryRequest));</span>
+	   try {
+<span class="nc bnc" id="L89" title="All 2 branches missed.">		     if(expectedResponseCode==200) {</span>
+<span class="nc" id="L90">		    	 return buildSuccessMesage();</span>
+		     }else {
+<span class="nc" id="L92">		    	 return buildNonSuccessMesage();</span>
+		     }
+<span class="nc" id="L94">	   }catch(Exception e) {</span>
+<span class="nc" id="L95">		   throw new ResourceNotFoundException(MessageConstants.MAPI_500, &quot;&quot;);</span>
+	   }
+  }
+
+  /**
+	 * Sets the expected respons ecode from the Loyalty Inquiry Service - This is a dummy service for testing
+	 * @param msidsn
+	 * @return
+	 * @throws InternalServerException
+	 * @throws InvalidRequestException
+	 * @throws UnauthorizedAccessException
+	 * @throws ResourceNotFoundException
+	 * @throws Exception
+	 */
+  @PostMapping(APIConstants.LOYALTY_INFO_SERVICE_DP_RESP_CODE_PUBLIC_URL)
+  @Consumes({APIConstants.CONSUMES_FORMAT})
+  @Produces({APIConstants.PRODUCES_FORMAT})
+	 @ApiOperation(value = &quot;Queries for Loyalty Information&quot;, notes = &quot;This Service API queries for Loyalty Information based on MSISDN&quot;, tags = {&quot;Loyalty Information&quot;})
+	    @ApiResponses(value = {
+	        @ApiResponse(code = 200, message = &quot;*Success* - Success queries Laoyalty Information&quot;, response = MasterResponse.class),
+	        @ApiResponse(code = 400, message = &quot;Bad request - Required request details missing&quot;),
+	        @ApiResponse(code = 500, message = &quot;Internal server error - Something went wrong&quot;)
+	    })
+	@Override
+   public String setLoyaltyInqueryResCodePub(HttpServletRequest httpServletRequest) throws InternalServerException,InvalidRequestException,UnauthorizedAccessException,ResourceNotFoundException,Exception{
+<span class="nc" id="L120">		this.expectedResponseCode = 200;</span>
+
+<span class="nc bnc" id="L122" title="All 2 branches missed.">		if(!ObjectUtils.isEmpty(httpServletRequest.getParameter(ServiceConstants.RESPONSE_CODE_KEY))) {</span>
+<span class="nc" id="L123">			this.expectedResponseCode = Integer.parseInt(httpServletRequest.getParameter(ServiceConstants.RESPONSE_CODE_KEY));</span>
+		}
+<span class="nc" id="L125">		return &quot;Successfully set the expected status code&quot;;</span>
+	}
+
+  public void setExpectedResponse(int expectedResponseCode) {
+<span class="nc" id="L129">	  this.expectedResponseCode = expectedResponseCode;</span>
+<span class="nc" id="L130">  }</span>
+
+  /**
+   * returns expected response code
+   * @param expectedResponseCode
+   * @return
+   */
+  public int getExpectedResponse() {
+<span class="nc" id="L138">	  return this.expectedResponseCode;</span>
+  }
+
+  /**
+   * temporary response
+   */
+  private LoyaltyInquiryResponse populateDummyResponse() {
+<span class="nc" id="L145">	  LoyaltyInquiryResponse loyaltyInquiryResponse = new LoyaltyInquiryResponse();</span>
+<span class="nc" id="L146">	  loyaltyInquiryResponse.setTransactionId(&quot;222333&quot;);</span>
+<span class="nc" id="L147">	  loyaltyInquiryResponse.setStatusCode(&quot;0&quot;);</span>
+<span class="nc" id="L148">	  loyaltyInquiryResponse.setPointsLeft(&quot;1000&quot;);</span>
+<span class="nc" id="L149">	  loyaltyInquiryResponse.setTotalEarnedPoints(&quot;3000&quot;);</span>
+<span class="nc" id="L150">	  loyaltyInquiryResponse.setTotalRedeemedPoints(&quot;3000&quot;);</span>
+<span class="nc" id="L151">	  loyaltyInquiryResponse.setTotalLostPoints(&quot;400&quot;);</span>
+<span class="nc" id="L152">	  loyaltyInquiryResponse.setTotalExpiredPoints(&quot;200&quot;);</span>
+<span class="nc" id="L153">	  loyaltyInquiryResponse.setRedemptionTransLimit(&quot;2000&quot;);</span>
+<span class="nc" id="L154">	  return loyaltyInquiryResponse;</span>
+  }
+
+  /**
+   * builds response code for 200
+   */
+  private String buildSuccessMesage() throws Exception{
+<span class="nc" id="L161">	  ObjectMapper objectMapper = new ObjectMapper();</span>
+<span class="nc" id="L162">	  return objectMapper.writeValueAsString(populateDummyResponse());</span>
+  }
+
+  /**
+   * builds response code for 200
+   */
+  private String buildNonSuccessMesage() throws Exception{
+<span class="nc" id="L169">	  ObjectMapper objectMapper = new ObjectMapper();</span>
+<span class="nc" id="L170">	  Status status = new Status();</span>
+<span class="nc" id="L171">	  status.setCode(String.valueOf(getExpectedResponse()));</span>
+<span class="nc" id="L172">  	  status.setMessageEn(localizedMessageService.localMessage(MessageConstants.LOYALTY_INQUIRY_MESSAGES,String.valueOf(getExpectedResponse()), Locales.EN)+&quot; &quot;);</span>
+<span class="nc" id="L173">  	  status.setMessageAr(localizedMessageService.localMessage(MessageConstants.LOYALTY_INQUIRY_MESSAGES,String.valueOf(getExpectedResponse()), Locales.AR)+&quot; &quot;);</span>
+<span class="nc" id="L174">  	  status.setSourceCode(String.valueOf(getExpectedResponse()));</span>
+<span class="nc" id="L175">  	  status.setSourceMessage(localizedMessageService.localMessage(MessageConstants.LOYALTY_INQUIRY_MESSAGES,String.valueOf(getExpectedResponse()), Locales.EN));</span>
+<span class="nc" id="L176">  	  status.setSourceCode(String.valueOf(getExpectedResponse()));</span>
+<span class="nc" id="L177">  	  status.setHelp(localizedMessageService.localMessage(MessageConstants.GENERIC_MESSAGE,MessageConstants.HELP_MESSAGE, Locales.EN));</span>
+<span class="nc" id="L178">	  return objectMapper.writeValueAsString(populateDummyResponse());</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

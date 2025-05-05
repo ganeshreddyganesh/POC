@@ -1,43 +1,40 @@
-2025-04-21 10:28:36,675 WARN c.z.h.p.HikariPool$HouseKeeper [HikariPool-1 housekeeper] HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1d9h54m32s788ms638µs).
-2025-04-21 11:35:45,591 WARN c.z.h.p.HikariPool$HouseKeeper [HikariPool-1 housekeeper] HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m12s347ms843µs700ns).
-2025-04-21 14:13:48,688 INFO o.s.b.StartupInfoLogger [restartedMain] Starting LoyaltyServiceApp using Java 23.0.2 with PID 20040 (D:\Mobily\loyalty-service\target\classes started by Ganes in D:\Mobily\loyalty-service)
-2025-04-21 14:13:48,703 INFO o.s.b.SpringApplication [restartedMain] The following 1 profile is active: "dev"
-2025-04-21 14:13:48,785 INFO o.s.b.l.DeferredLog [restartedMain] Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
-2025-04-21 14:13:48,785 INFO o.s.b.l.DeferredLog [restartedMain] For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
-2025-04-21 14:13:49,910 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Multiple Spring Data modules found, entering strict repository configuration mode
-2025-04-21 14:13:49,910 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-04-21 14:13:50,081 INFO o.s.d.r.c.RepositoryConfigurationExtensionSupport [restartedMain] Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.mobily.loyalty.service.repository.UserSessionRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
-2025-04-21 14:13:50,099 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Finished Spring Data repository scanning in 181 ms. Found 1 JPA repository interfaces.
-2025-04-21 14:13:50,144 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Multiple Spring Data modules found, entering strict repository configuration mode
-2025-04-21 14:13:50,147 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Bootstrapping Spring Data Redis repositories in DEFAULT mode.
-2025-04-21 14:13:50,187 INFO o.s.d.r.c.RepositoryConfigurationExtensionSupport [restartedMain] Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.mobily.loyalty.service.repository.AuditLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2025-04-21 14:13:50,204 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Finished Spring Data repository scanning in 32 ms. Found 1 Redis repository interfaces.
-2025-04-21 14:13:51,647 INFO o.s.b.w.e.t.TomcatWebServer [restartedMain] Tomcat initialized with port(s): 8080 (http)
-2025-04-21 14:13:51,647 INFO o.a.j.l.DirectJDKLog [restartedMain] Initializing ProtocolHandler ["http-nio-8080"]
-2025-04-21 14:13:51,647 INFO o.a.j.l.DirectJDKLog [restartedMain] Starting service [Tomcat]
-2025-04-21 14:13:51,647 INFO o.a.j.l.DirectJDKLog [restartedMain] Starting Servlet engine: [Apache Tomcat/10.1.11]
-2025-04-21 14:13:51,743 INFO o.a.j.l.DirectJDKLog [restartedMain] Initializing Spring embedded WebApplicationContext
-2025-04-21 14:13:51,743 INFO o.s.b.w.s.c.ServletWebServerApplicationContext [restartedMain] Root WebApplicationContext: initialization completed in 2958 ms
-2025-04-21 14:13:52,632 INFO o.s.b.d.a.OptionalLiveReloadServer [restartedMain] LiveReload server is running on port 35729
-2025-04-21 14:13:52,806 INFO o.h.j.i.u.LogHelper [restartedMain] HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-04-21 14:13:52,914 INFO o.h.Version [restartedMain] HHH000412: Hibernate ORM core version 6.2.6.Final
-2025-04-21 14:13:52,928 INFO o.h.c.Environment [restartedMain] HHH000406: Using bytecode reflection optimizer
-2025-04-21 14:13:53,121 INFO o.h.b.i.BytecodeProviderInitiator [restartedMain] HHH000021: Bytecode provider name : bytebuddy
-2025-04-21 14:13:53,359 INFO o.s.o.j.p.SpringPersistenceUnitInfo [restartedMain] No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-04-21 14:13:53,381 INFO c.z.h.HikariDataSource [restartedMain] HikariPool-1 - Starting...
-2025-04-21 14:13:53,678 INFO c.z.h.p.HikariPool [restartedMain] HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@bb4a0ed
-2025-04-21 14:13:53,684 INFO c.z.h.HikariDataSource [restartedMain] HikariPool-1 - Start completed.
-2025-04-21 14:13:54,090 INFO o.h.b.i.BytecodeProviderInitiator [restartedMain] HHH000021: Bytecode provider name : bytebuddy
-2025-04-21 14:13:54,743 INFO o.h.e.t.j.p.i.JtaPlatformInitiator [restartedMain] HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
-2025-04-21 14:13:54,847 INFO o.s.o.j.AbstractEntityManagerFactoryBean [restartedMain] Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-04-21 14:13:54,892 INFO c.m.l.s.c.GlobalSecurityConfiguration [restartedMain] Setting Security Configuration, Global Security
-2025-04-21 14:13:54,892 INFO c.m.l.s.c.GlobalSecurityConfiguration [restartedMain] Successfully Set Security Configuration, Global Security
-2025-04-21 14:13:55,264 WARN o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration [restartedMain] spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-04-21 14:13:55,375 INFO c.m.l.s.c.GlobalSecurityConfiguration [restartedMain] Setting Security Configuration, Global Security 
-2025-04-21 14:13:55,724 INFO o.s.s.w.DefaultSecurityFilterChain [restartedMain] Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@6b87d8eb, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@5fa6f1d7, org.springframework.security.web.context.SecurityContextHolderFilter@552012ce, org.springframework.security.web.header.HeaderWriterFilter@5d86e312, org.springframework.security.web.authentication.logout.LogoutFilter@3f44c0ea, org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter@4604a1b9, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@1689b10a, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4205dde2, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@3ccc8af3, org.springframework.security.web.session.SessionManagementFilter@3454308e, org.springframework.security.web.access.ExceptionTranslationFilter@37b5f17d, org.springframework.security.web.access.intercept.AuthorizationFilter@79009c49]
-2025-04-21 14:13:56,095 INFO o.a.j.l.DirectJDKLog [restartedMain] Starting ProtocolHandler ["http-nio-8080"]
-2025-04-21 14:13:56,125 INFO o.s.b.w.e.t.TomcatWebServer [restartedMain] Tomcat started on port(s): 8080 (http) with context path ''
-2025-04-21 14:13:56,134 INFO o.s.b.StartupInfoLogger [restartedMain] Started LoyaltyServiceApp in 8.315 seconds (process running for 9.385)
-2025-04-21 14:13:56,140 INFO c.m.l.s.LoyaltyServiceApp [restartedMain]  Loyalty services started successfully
-2025-04-21 14:13:56,141 INFO c.m.l.s.LoyaltyServiceApp [restartedMain]  Loyalty services started successfully
-2025-04-21 15:19:53,766 WARN c.z.h.p.HikariPool$HouseKeeper [HikariPool-1 housekeeper] HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h2m29s865ms581µs700ns).
+2025-05-05 11:32:39,406 INFO o.s.b.StartupInfoLogger [restartedMain] Starting LoyaltyServiceApp using Java 23.0.2 with PID 2412 (D:\Mobily\loyalty-service\target\classes started by Ganes in D:\Mobily\loyalty-service)
+2025-05-05 11:32:39,435 INFO o.s.b.SpringApplication [restartedMain] The following 1 profile is active: "dev"
+2025-05-05 11:32:39,562 INFO o.s.b.l.DeferredLog [restartedMain] Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-05-05 11:32:39,562 INFO o.s.b.l.DeferredLog [restartedMain] For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-05-05 11:32:41,535 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Multiple Spring Data modules found, entering strict repository configuration mode
+2025-05-05 11:32:41,535 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-05 11:32:41,853 INFO o.s.d.r.c.RepositoryConfigurationExtensionSupport [restartedMain] Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.mobily.loyalty.service.repository.UserSessionRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2025-05-05 11:32:41,878 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Finished Spring Data repository scanning in 327 ms. Found 1 JPA repository interfaces.
+2025-05-05 11:32:41,935 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Multiple Spring Data modules found, entering strict repository configuration mode
+2025-05-05 11:32:41,935 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-05-05 11:32:42,009 INFO o.s.d.r.c.RepositoryConfigurationExtensionSupport [restartedMain] Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.mobily.loyalty.service.repository.AuditLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-05-05 11:32:42,024 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Finished Spring Data repository scanning in 44 ms. Found 1 Redis repository interfaces.
+2025-05-05 11:32:44,494 INFO o.s.b.w.e.t.TomcatWebServer [restartedMain] Tomcat initialized with port(s): 8080 (http)
+2025-05-05 11:32:44,502 INFO o.a.j.l.DirectJDKLog [restartedMain] Initializing ProtocolHandler ["http-nio-8080"]
+2025-05-05 11:32:44,516 INFO o.a.j.l.DirectJDKLog [restartedMain] Starting service [Tomcat]
+2025-05-05 11:32:44,516 INFO o.a.j.l.DirectJDKLog [restartedMain] Starting Servlet engine: [Apache Tomcat/10.1.11]
+2025-05-05 11:32:44,684 INFO o.a.j.l.DirectJDKLog [restartedMain] Initializing Spring embedded WebApplicationContext
+2025-05-05 11:32:44,684 INFO o.s.b.w.s.c.ServletWebServerApplicationContext [restartedMain] Root WebApplicationContext: initialization completed in 5122 ms
+2025-05-05 11:32:45,623 INFO o.s.b.d.a.OptionalLiveReloadServer [restartedMain] LiveReload server is running on port 35729
+2025-05-05 11:32:45,897 INFO o.h.j.i.u.LogHelper [restartedMain] HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-05 11:32:46,134 INFO o.h.Version [restartedMain] HHH000412: Hibernate ORM core version 6.2.6.Final
+2025-05-05 11:32:46,142 INFO o.h.c.Environment [restartedMain] HHH000406: Using bytecode reflection optimizer
+2025-05-05 11:32:46,348 INFO o.h.b.i.BytecodeProviderInitiator [restartedMain] HHH000021: Bytecode provider name : bytebuddy
+2025-05-05 11:32:46,609 INFO o.s.o.j.p.SpringPersistenceUnitInfo [restartedMain] No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-05 11:32:46,661 INFO c.z.h.HikariDataSource [restartedMain] HikariPool-1 - Starting...
+2025-05-05 11:32:46,969 INFO c.z.h.p.HikariPool [restartedMain] HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@60f7d219
+2025-05-05 11:32:46,969 INFO c.z.h.HikariDataSource [restartedMain] HikariPool-1 - Start completed.
+2025-05-05 11:32:47,387 INFO o.h.b.i.BytecodeProviderInitiator [restartedMain] HHH000021: Bytecode provider name : bytebuddy
+2025-05-05 11:32:48,572 INFO o.h.e.t.j.p.i.JtaPlatformInitiator [restartedMain] HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-05-05 11:32:48,721 INFO o.s.o.j.AbstractEntityManagerFactoryBean [restartedMain] Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-05 11:32:48,792 INFO c.m.l.s.c.GlobalSecurityConfiguration [restartedMain] Setting Security Configuration, Global Security
+2025-05-05 11:32:48,801 INFO c.m.l.s.c.GlobalSecurityConfiguration [restartedMain] Successfully Set Security Configuration, Global Security
+2025-05-05 11:32:49,235 WARN o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration [restartedMain] spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-05 11:32:49,348 INFO c.m.l.s.c.GlobalSecurityConfiguration [restartedMain] Setting Security Configuration, Global Security 
+2025-05-05 11:32:49,660 INFO o.s.s.w.DefaultSecurityFilterChain [restartedMain] Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@77142f2f, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@78854a5a, org.springframework.security.web.context.SecurityContextHolderFilter@6fb9d7d6, org.springframework.security.web.header.HeaderWriterFilter@32b427b7, org.springframework.security.web.authentication.logout.LogoutFilter@3f9e7847, org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter@46555bb9, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@44127710, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@e5ef647, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@14e14e60, org.springframework.security.web.session.SessionManagementFilter@39523f68, org.springframework.security.web.access.ExceptionTranslationFilter@23bf17c1, org.springframework.security.web.access.intercept.AuthorizationFilter@1e930f0b]
+2025-05-05 11:32:50,137 INFO o.a.j.l.DirectJDKLog [restartedMain] Starting ProtocolHandler ["http-nio-8080"]
+2025-05-05 11:32:50,169 INFO o.s.b.w.e.t.TomcatWebServer [restartedMain] Tomcat started on port(s): 8080 (http) with context path ''
+2025-05-05 11:32:50,179 INFO o.s.b.StartupInfoLogger [restartedMain] Started LoyaltyServiceApp in 12.308 seconds (process running for 13.563)
+2025-05-05 11:32:50,202 INFO c.m.l.s.LoyaltyServiceApp [restartedMain]  Loyalty services started successfully
+2025-05-05 11:32:50,202 INFO c.m.l.s.LoyaltyServiceApp [restartedMain]  Loyalty services started successfully

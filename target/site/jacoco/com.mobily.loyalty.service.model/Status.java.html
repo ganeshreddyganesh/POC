@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Status.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">loyalty-service</a> &gt; <a href="index.source.html" class="el_package">com.mobily.loyalty.service.model</a> &gt; <span class="el_source">Status.java</span></div><h1>Status.java</h1><pre class="source lang-java linenums">package com.mobily.loyalty.service.model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * This models the service status object
+ * @author Mobily Info Tech (MIT)
+ *
+ */
+@Getter
+@Setter
+<span class="nc" id="L16">public class Status {</span>
+	
+	/** response code **/	
+<span class="nc" id="L19">	@JsonProperty(</span>
+	        value=&quot;code&quot;,
+	        required=true,
+	        defaultValue=&quot;&quot;,
+	        access= Access.READ_WRITE)
+    private String code=&quot;&quot;;
+    
+    /** response source code **/
+<span class="nc" id="L27">	@JsonProperty(</span>
+	        value=&quot;sourceCode&quot;,
+	        required=true,
+	        defaultValue=&quot;&quot;,
+	        access= Access.READ_WRITE)
+    private String sourceCode=&quot;&quot;;
+    
+    /** response source message **/
+<span class="nc" id="L35">	@JsonProperty(</span>
+	        value=&quot;sourceMessage&quot;,
+	        required=true,
+	        defaultValue=&quot;&quot;,
+	        access= Access.READ_WRITE)
+    private String sourceMessage=&quot;&quot;;
+    
+    /**response message in Arabic **/
+<span class="nc" id="L43">	@JsonProperty(</span>
+	        value=&quot;messageAr&quot;,
+	        required=true,
+	        defaultValue=&quot;&quot;,
+	        access= Access.READ_WRITE)
+    private String messageAr=&quot;&quot;;
+    
+    /** response message in English **/
+<span class="nc" id="L51">	@JsonProperty(</span>
+	        value=&quot;messageEn&quot;,
+	        required=true,
+	        defaultValue=&quot;&quot;,
+	        access= Access.READ_WRITE)
+    private String messageEn=&quot;&quot;;
+    
+    /** response help message **/
+<span class="nc" id="L59">	@JsonProperty(</span>
+	        value=&quot;help&quot;,
+	        required=true,
+	        defaultValue=&quot;&quot;,
+	        access= Access.READ_WRITE)
+    private String help=&quot;&quot;;
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

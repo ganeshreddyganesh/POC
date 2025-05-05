@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>APIConstants.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">loyalty-service</a> &gt; <a href="index.source.html" class="el_package">com.mobily.loyalty.service.constants</a> &gt; <span class="el_source">APIConstants.java</span></div><h1>APIConstants.java</h1><pre class="source lang-java linenums">package com.mobily.loyalty.service.constants;
+
+
+/**
+ * Defines all constants for APIoperations
+ * @author Mobily Info Tech (MIT)
+ *
+ */
+<span class="nc" id="L9">public class APIConstants {</span>
+
+	/** base service URL **/
+	public final static String BASE_SERVICE_URL=&quot;clientbe/api/v1/&quot;;
+	
+	/** base service URL **/
+	public final static String BASE_CONTEXT_PATH=&quot;/&quot;;
+	
+	/** loyalty service URL **/
+	public final static String LOYALTY_INFO_SERVICE_SECURED_URL= &quot;/clientbe/loyalty/v1/info/&quot;;
+	
+	/** public URL pattern **/
+	public final static String PUBLIC_RESOURCES_URL= &quot;/public/**&quot;;
+	
+	/** public context for by passing spring token based security **/
+	public final static String PUBLIC_CONTEXT= &quot;/public&quot;;
+	
+	/** loyalty service URL **/
+	public final static String LOYALTY_INFO_SERVICE_PUBLIC_URL= &quot;public/loyalty/v1/info&quot;;
+	
+	/** loyalty service URL **/
+	public final static String LOYALTY_INFO_SERVICE_DP_PUBLIC_URL= &quot;public/loyalty/dp/v1/info&quot;;
+	
+	/** loyalty service URL **/
+	public final static String LOYALTY_INFO_SERVICE_DP_RESP_CODE_PUBLIC_URL= &quot;public/loyalty/dp/v1/code&quot;;
+	
+	/** public URL pattern **/
+	public final static String LOYALTY_SERVICE_RESOURCES_CONTEXT= &quot;/clientbe/**&quot;;
+	
+	/** Ping service URL **/
+	public final static String PING_URL= &quot;/ping&quot;;
+	
+	/** realm key **/
+	public final static String REALM= &quot;/realm&quot;;
+	
+	/** realms key **/
+	public final static String REALMS= &quot;/realms&quot;;
+	
+	/** user id header key **/
+	public final static String CORRELATION_ID_HEADER_KEY=&quot;x-correlation-id&quot;;
+	
+	/** Source Channel header key **/
+	public final static String CHANNEL_HEADER_KEY =&quot;x-source-channel&quot;;
+	
+	/** Transaction ID header key **/
+	public final static String TRANSACTION_ID_HEADER_KEY =&quot;x-transaction-id&quot;;
+	
+	/** CEM KEY header key **/
+	public final static String CEM_KEY_HEADER_KEY =&quot;cem-key&quot;;
+	
+	/** User ID KEY header key **/
+	public final static String X_USERID_HEADER_KEY =&quot;x-user_id&quot;;
+	
+	/** User ID KEY header key **/
+	public final static String X_USERID_KEY_VALUE =&quot;testuser12345&quot;;
+		
+	/** services consumes format **/
+	public final static String CONSUMES_FORMAT=&quot;application/json&quot;;
+	
+	/** service response produces format **/
+	public final static String PRODUCES_FORMAT=&quot;application/json&quot;;
+	
+	/** API status code for resource conflict **/
+	public final static int SERVICE_CONFLICT_STATUS_CODE=409;
+	
+	
+	/** API status code for resource conflict **/
+	public final static String LANGUAGE_HEADER_KEY=&quot;language&quot;;
+	
+	/** APIConstants.DP_SERVICE_URL **/
+	public final static String DP_SERVICE_URL = &quot;dpserviceurl&quot;;
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -29,6 +29,7 @@ com\mobily\loyalty\service\resourcebundle\Locales.class
 com\mobily\loyalty\service\serviceclient\ServiceClient.class
 com\mobily\loyalty\service\advisors\RESTResponseEntityExceptionHandler.class
 com\mobily\loyalty\service\utils\DateUtil.class
+com\mobily\loyalty\service\configs\OpenApiConfig.class
 com\mobily\loyalty\service\configs\TokenConverterProperties.class
 com\mobily\loyalty\service\repository\AuditLogRepository.class
 com\mobily\loyalty\service\exceptions\BaseException.class

@@ -15,6 +15,7 @@ D:\Mobily\loyalty-service\src\main\java\com\mobily\loyalty\service\services\Audi
 D:\Mobily\loyalty-service\src\main\java\com\mobily\loyalty\service\exceptions\SessionTimeoutException.java
 D:\Mobily\loyalty-service\src\main\java\com\mobily\loyalty\service\LoyaltyServiceApp.java
 D:\Mobily\loyalty-service\src\main\java\com\mobily\loyalty\service\configs\CustomFilter.java
+D:\Mobily\loyalty-service\src\main\java\com\mobily\loyalty\service\configs\OpenApiConfig.java
 D:\Mobily\loyalty-service\src\main\java\com\mobily\loyalty\service\serviceclient\ServiceResponse.java
 D:\Mobily\loyalty-service\src\main\java\com\mobily\loyalty\service\constants\APIConstants.java
 D:\Mobily\loyalty-service\src\main\java\com\mobily\loyalty\service\exceptions\BaseException.java

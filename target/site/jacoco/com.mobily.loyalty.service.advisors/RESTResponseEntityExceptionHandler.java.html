@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RESTResponseEntityExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">loyalty-service</a> &gt; <a href="index.source.html" class="el_package">com.mobily.loyalty.service.advisors</a> &gt; <span class="el_source">RESTResponseEntityExceptionHandler.java</span></div><h1>RESTResponseEntityExceptionHandler.java</h1><pre class="source lang-java linenums">package com.mobily.loyalty.service.advisors;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mobily.loyalty.service.constants.MessageConstants;
+import com.mobily.loyalty.service.exceptions.BaseException;
+import com.mobily.loyalty.service.exceptions.InternalServerException;
+import com.mobily.loyalty.service.exceptions.InvalidRequestException;
+import com.mobily.loyalty.service.exceptions.ResourceAlreadyExistsException;
+import com.mobily.loyalty.service.exceptions.ResourceNotFoundException;
+import com.mobily.loyalty.service.exceptions.UnauthorizedAccessException;
+import com.mobily.loyalty.service.model.MasterResponse;
+import com.mobily.loyalty.service.model.Status;
+import com.mobily.loyalty.service.resourcebundle.Locales;
+import com.mobily.loyalty.service.resourcebundle.LocalizedMessageService;
+
+import lombok.extern.slf4j.Slf4j;
+
+
+/**
+ * Handles all exceptions and returns the response accordingly
+ * @author Mobily Info Tech(MIT)
+ *
+ */
+<span class="nc" id="L38">@Slf4j</span>
+@ControllerAdvice
+<span class="nc" id="L40">public class RESTResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {</span>
+	
+	@Autowired
+	private LocalizedMessageService localizedMessageService;
+
+	/**
+	 * handles ResourceNotFoundException
+	 * @param ex
+	 * @param request
+	 * @return
+	 */
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public @ResponseBody ResponseEntity&lt;Object&gt; handleResourceNotFoundException(final ResourceNotFoundException ex,
+                                                             final WebRequest request) {
+<span class="nc" id="L55">        return buildExceptionResponse(ex, HttpStatus.NOT_FOUND);</span>
+    }
+    
+    /**
+	 * handles InternalServerException
+	 * @param ex
+	 * @param request
+	 * @return
+	 */
+    @ExceptionHandler(InternalServerException.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    public @ResponseBody ResponseEntity&lt;Object&gt; handleInternalServerException(final InternalServerException ex,
+                                                             final WebRequest request) {
+<span class="nc" id="L68">        return buildExceptionResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+    }
+    
+    /**
+   	 * handles InvalidRequestException
+   	 * @param ex
+   	 * @param request
+   	 * @return
+   	 */
+    @ExceptionHandler(InvalidRequestException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public @ResponseBody ResponseEntity&lt;Object&gt; handleBadRequestException(final InvalidRequestException ex,
+                                                             final WebRequest request) {
+<span class="nc" id="L81">        return buildExceptionResponse(ex, HttpStatus.BAD_REQUEST);</span>
+    }
+    
+    /**
+	 * handles UnAuthorizedException
+	 * @param ex
+	 * @param request
+	 * @return
+	 */
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    public @ResponseBody ResponseEntity&lt;Object&gt; handleDUnAuthorizedException(final UnauthorizedAccessException ex,
+                                                             final WebRequest request) {    	
+<span class="nc" id="L94">        return buildExceptionResponse(ex, HttpStatus.UNAUTHORIZED);</span>
+    }
+    
+    /**
+  	 * handles DuplicateKeyViolationException
+  	 * @param ex
+  	 * @param request
+  	 * @return
+  	 */
+      @ExceptionHandler(ResourceAlreadyExistsException.class)
+      @ResponseStatus(value = HttpStatus.CONFLICT)
+      public @ResponseBody ResponseEntity&lt;Object&gt; handleResourceAlreadyExistsException(final ResourceAlreadyExistsException ex,
+                                                               final WebRequest request) {
+<span class="nc" id="L107">      	log.info(&quot;Entered into Resource Already Exists Exception&quot;);</span>
+<span class="nc" id="L108">          return buildExceptionResponse(ex, HttpStatus.CONFLICT);</span>
+      }
+
+	/**
+	 * Builds the exception response entity.
+	 *
+	 * @param baseException The custom base exception containing error details.
+	 * @param httpStatus The HTTP status to return in the response.
+	 * @return A ResponseEntity with populated MasterResponse and Status.
+	 */
+
+	private ResponseEntity&lt;Object&gt; buildExceptionResponse(final BaseException baseException, HttpStatus httpStatus) {
+    
+<span class="nc" id="L121">    	Status status = new Status();</span>
+<span class="nc" id="L122">    	MasterResponse masterResponse = new MasterResponse();</span>
+<span class="nc" id="L123">    	masterResponse.setStatus(status);    	</span>
+<span class="nc" id="L124">    	status.setCode(String.valueOf(httpStatus.value()));    	</span>
+<span class="nc" id="L125">    	status.setMessageEn(localizedMessageService.localMessage(MessageConstants.LOYALTY_INQUIRY_MESSAGES, baseException.getMessageCode(), Locales.EN)+&quot; &quot;+baseException.getMessage());    	    	    	</span>
+<span class="nc" id="L126">    	status.setMessageAr(localizedMessageService.localMessage(MessageConstants.LOYALTY_INQUIRY_MESSAGES, baseException.getMessageCode(), Locales.AR)+&quot; &quot;+baseException.getMessage());</span>
+<span class="nc" id="L127">    	status.setSourceCode(baseException.getMessageCode());</span>
+<span class="nc" id="L128">    	status.setSourceMessage(localizedMessageService.localMessage(MessageConstants.GENERIC_MESSAGE,baseException.getMessageCode(), Locales.EN));</span>
+<span class="nc" id="L129">    	status.setSourceCode(baseException.getMessageCode()); </span>
+<span class="nc" id="L130">    	status.setHelp(localizedMessageService.localMessage(MessageConstants.GENERIC_MESSAGE,MessageConstants.HELP_MESSAGE, Locales.EN));    	    	</span>
+<span class="nc" id="L131">    	ResponseEntity&lt;Object&gt; responseEntity = new ResponseEntity&lt;&gt;(masterResponse, httpStatus);</span>
+<span class="nc" id="L132">        return responseEntity;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

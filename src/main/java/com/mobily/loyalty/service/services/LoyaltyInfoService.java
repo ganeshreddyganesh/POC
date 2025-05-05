@@ -145,6 +145,34 @@ public class LoyaltyInfoService extends BaseService{
 	 */
 	private ServiceResponse fetchLoyaltyInfoFromDP(LoyaltyInfoRequest loyaltyInfoRequest, Map<String,String> hashMapHeaders) throws ResourceNotFoundException,ResourceAlreadyExistsException,InternalServerException,InvalidRequestException,Exception{
 		
+		// Validate account number
+		boolean hasAccountNumber = false;
+		List<ExtraInfo> lstExtraInfo = loyaltyInfoRequest.getExtraInfo();
+		if (lstExtraInfo == null || lstExtraInfo.isEmpty()) {
+			throw new InvalidRequestException(MessageConstants.MAPI_400, "Account number is required");
+		}
+		
+		for(ExtraInfo extraInfo : lstExtraInfo) {
+			if(!ObjectUtils.isEmpty(extraInfo.getKey()) && extraInfo.getKey().equalsIgnoreCase(MessageConstants.ACCOUNT_NUMBER)){
+				if(ObjectUtils.isEmpty(extraInfo.getValue()) || extraInfo.getValue().trim().isEmpty()) {
+					throw new InvalidRequestException(MessageConstants.MAPI_400, "Account number is required");
+				}
+				hasAccountNumber = true;
+				break;
+			}
+		}
+		if(!hasAccountNumber) {
+			throw new InvalidRequestException(MessageConstants.MAPI_400, "Account number is required");
+		}
+
+		// Validate language
+		if(ObjectUtils.isEmpty(loyaltyInfoRequest.getLanguage()) || loyaltyInfoRequest.getLanguage().trim().isEmpty()) {
+			throw new InvalidRequestException(MessageConstants.MAPI_400, "Language is required");
+		}
+		if(loyaltyInfoRequest.getLanguage().length() != 2) {
+			throw new InvalidRequestException(MessageConstants.MAPI_400, "Language must be 2 characters");
+		}
+
 		String loyaltyServiceDPURL = appConfigurationLoader.getLoyaltyInquiryDPURL();
 		ObjectMapper objectMapper = new ObjectMapper();
 		ServiceResponse serviceResponse = null;		
@@ -152,13 +180,9 @@ public class LoyaltyInfoService extends BaseService{
 		
 		loyaltyInquiryRequest.setVersion(loyaltyInfoRequest.getVersion());
 		loyaltyInquiryRequest.setTransactionId(hashMapHeaders.get(APIConstants.CORRELATION_ID_HEADER_KEY));
-		
 		loyaltyInquiryRequest.setLanguage(loyaltyInfoRequest.getLanguage());
 		
-		List<ExtraInfo> lstExtraInfo = loyaltyInfoRequest.getExtraInfo();
-		
 		for(ExtraInfo extraInfo:lstExtraInfo) {
-			
 			if(!ObjectUtils.isEmpty(extraInfo.getKey()) && extraInfo.getKey().equalsIgnoreCase(MessageConstants.ACCOUNT_NUMBER)){
 				loyaltyInquiryRequest.setMsisdn(extraInfo.getValue());
 			}
@@ -174,7 +198,13 @@ public class LoyaltyInfoService extends BaseService{
 			loyaltyServiceDPURL = System.getenv(APIConstants.DP_SERVICE_URL);
 		}
 		log.info(" DP Service URL is "+loyaltyServiceDPURL);
-		serviceResponse = serviceClient.execute(loyaltyServiceDPURL, HttpMethod.POST, objectMapper.writeValueAsString(loyaltyInquiryRequest), populateHttpHeaders(hashMapHeaders));							
+		serviceResponse = serviceClient.execute(loyaltyServiceDPURL, HttpMethod.POST, objectMapper.writeValueAsString(loyaltyInquiryRequest), populateHttpHeaders(hashMapHeaders));
+		
+		// Check for service errors
+		if (serviceResponse != null && serviceResponse.getHttpStatusCode() >= 500) {
+			throw new InternalServerException(MessageConstants.MAPI_500, "Service error occurred");
+		}
+		
 		return serviceResponse;				
 	}
 		

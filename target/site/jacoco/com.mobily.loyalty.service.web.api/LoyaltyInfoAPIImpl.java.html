@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoyaltyInfoAPIImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">loyalty-service</a> &gt; <a href="index.source.html" class="el_package">com.mobily.loyalty.service.web.api</a> &gt; <span class="el_source">LoyaltyInfoAPIImpl.java</span></div><h1>LoyaltyInfoAPIImpl.java</h1><pre class="source lang-java linenums">package com.mobily.loyalty.service.web.api;
+
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.mobily.loyalty.service.constants.MessageConstants;
+import com.mobily.loyalty.service.exceptions.InternalServerException;
+import com.mobily.loyalty.service.exceptions.InvalidRequestException;
+import com.mobily.loyalty.service.exceptions.ResourceNotFoundException;
+import com.mobily.loyalty.service.exceptions.UnauthorizedAccessException;
+import com.mobily.loyalty.service.model.LoyaltyInfoRequest;
+import com.mobily.loyalty.service.model.MasterResponse;
+import com.mobily.loyalty.service.model.Status;
+import com.mobily.loyalty.service.resourcebundle.Locales;
+import com.mobily.loyalty.service.resourcebundle.LocalizedMessageService;
+import com.mobily.loyalty.service.services.LoyaltyInfoService;
+import com.mobily.loyalty.service.services.ServiceResponseBuilder;
+
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * Loyalty Infor Service API
+ * @author ACLDigital
+ *
+ */
+@RestController
+<span class="nc" id="L34">@Slf4j</span>
+<span class="nc" id="L35">public class LoyaltyInfoAPIImpl implements ILoyaltyInfoAPI{</span>
+	
+	/** Response service builder reference **/
+	@Autowired
+	private ServiceResponseBuilder responseBuilder;
+	
+	/** Login service reference **/
+	@Autowired
+	private LoyaltyInfoService loyaltyInfoService;
+	
+	/** cem key **/
+	private final static String CEM_KEY=&quot;cem-key&quot;;
+	
+	/** cem key **/
+	private final static String CUSTOM_HEADER_START_KEY=&quot;x-&quot;;
+	
+	@Autowired
+	private LocalizedMessageService localizedMessageService;
+
+	/**
+	 * queries for loyalty information - This is secure version with JST Token
+	 * @param msidsn
+	 * @return
+	 * @throws InternalServerException
+	 * @throws InvalidRequestException
+	 * @throws UnauthorizedAccessException
+	 * @throws ResourceNotFoundException
+	 * @throws Exception
+	 */
+   @Override
+   public  MasterResponse getLoyaltyInfo(@RequestBody LoyaltyInfoRequest loyaltyInfoRequest,HttpServletRequest httpServletRequest) throws InternalServerException,InvalidRequestException,UnauthorizedAccessException,ResourceNotFoundException,Exception{
+<span class="nc" id="L66">	   log.info(&quot;About to query for Loyalty Information Secured Service &quot;+loyaltyInfoRequest);</span>
+<span class="nc" id="L67">	   MasterResponse masterResponse = new MasterResponse();</span>
+<span class="nc" id="L68">	   masterResponse.setStatus(buildSucecssStatus());</span>
+<span class="nc" id="L69">	   masterResponse.setData(loyaltyInfoService.getLoyaltyInformation(loyaltyInfoRequest,populateHeaders(httpServletRequest)));</span>
+<span class="nc" id="L70">	   return masterResponse;</span>
+   }
+   
+   /**
+	 * queries for loyalty information - This is public version
+	 * @param msidsn
+	 * @return
+	 * @throws InternalServerException
+	 * @throws InvalidRequestException
+	 * @throws UnauthorizedAccessException
+	 * @throws ResourceNotFoundException
+	 * @throws Exception
+	 */
+  @Override
+  public  MasterResponse getLoyaltyInfoPub(@RequestBody(required = true) LoyaltyInfoRequest loyaltyInfoRequest,HttpServletRequest httpServletRequest) throws InternalServerException,InvalidRequestException,UnauthorizedAccessException,ResourceNotFoundException,Exception{	   
+<span class="nc" id="L85">	   log.info(&quot;About to query for Loyalty Information Public Service&quot;+loyaltyInfoRequest);</span>
+<span class="nc" id="L86">	   MasterResponse masterResponse = new MasterResponse();</span>
+<span class="nc" id="L87">	   masterResponse.setStatus(buildSucecssStatus());</span>
+<span class="nc" id="L88">	   masterResponse.setData(loyaltyInfoService.getLoyaltyInformation(loyaltyInfoRequest,populateHeaders(httpServletRequest)));</span>
+<span class="nc" id="L89">	   return masterResponse;</span>
+  }
+
+  /**
+   * builds success status
+   * @return
+   */
+  private Status buildSucecssStatus() {
+<span class="nc" id="L97">		Status status = new Status();</span>
+<span class="nc" id="L98">		status.setCode(String.valueOf(HttpStatus.SC_OK));</span>
+<span class="nc" id="L99">		status.setSourceCode(MessageConstants.MAPI_000);</span>
+<span class="nc" id="L100">		status.setSourceMessage(MessageConstants.SUCCESS_MESSAGE);</span>
+<span class="nc" id="L101">		status.setMessageEn(localizedMessageService.localMessage(MessageConstants.LOYALTY_INQUIRY_MESSAGES, MessageConstants.MAPI_000, Locales.EN));</span>
+<span class="nc" id="L102">		status.setMessageAr(localizedMessageService.localMessage(MessageConstants.LOYALTY_INQUIRY_MESSAGES, MessageConstants.MAPI_000, Locales.AR));					</span>
+<span class="nc" id="L103">		status.setHelp(localizedMessageService.localMessage(MessageConstants.GENERIC_MESSAGE,MessageConstants.HELP_MESSAGE, Locales.EN));    </span>
+<span class="nc" id="L104">		return status;</span>
+  }
+  /**
+   * returns headers
+   * @param httpServletRequest
+   * @return
+   */
+  private Map&lt;String,String&gt; populateHeaders(HttpServletRequest httpServletRequest){
+<span class="nc" id="L112">	  HashMap&lt;String,String&gt; hashMapHeaders = new HashMap&lt;String,String&gt;();</span>
+	  
+<span class="nc" id="L114">	  String key = &quot;&quot;;</span>
+<span class="nc" id="L115">	  Enumeration enumHeaders =httpServletRequest.getHeaderNames();</span>
+	  
+<span class="nc bnc" id="L117" title="All 2 branches missed.">	  while(enumHeaders.hasMoreElements()) {</span>
+<span class="nc" id="L118">		  key = String.valueOf(enumHeaders.nextElement());	</span>
+<span class="nc bnc" id="L119" title="All 4 branches missed.">		  if(key.startsWith(CUSTOM_HEADER_START_KEY) || key.startsWith(CEM_KEY)) {</span>
+<span class="nc" id="L120">			  hashMapHeaders.put(key, httpServletRequest.getHeader(key));	</span>
+		  }
+	  }	  
+<span class="nc" id="L123">	  return hashMapHeaders;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

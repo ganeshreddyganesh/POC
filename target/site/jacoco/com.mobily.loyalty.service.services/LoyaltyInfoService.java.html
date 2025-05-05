@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoyaltyInfoService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">loyalty-service</a> &gt; <a href="index.source.html" class="el_package">com.mobily.loyalty.service.services</a> &gt; <span class="el_source">LoyaltyInfoService.java</span></div><h1>LoyaltyInfoService.java</h1><pre class="source lang-java linenums">package com.mobily.loyalty.service.services;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.ws.rs.InternalServerErrorException;
+
+import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mobily.loyalty.service.configs.AppConfigurationLoader;
+import com.mobily.loyalty.service.constants.APIConstants;
+import com.mobily.loyalty.service.constants.MessageConstants;
+import com.mobily.loyalty.service.constants.ServiceConstants;
+import com.mobily.loyalty.service.datapower.model.LoyaltyInquiryRequest;
+import com.mobily.loyalty.service.datapower.model.LoyaltyInquiryResponse;
+import com.mobily.loyalty.service.exceptions.InternalServerException;
+import com.mobily.loyalty.service.exceptions.InvalidRequestException;
+import com.mobily.loyalty.service.exceptions.ResourceAlreadyExistsException;
+import com.mobily.loyalty.service.exceptions.ResourceNotFoundException;
+import com.mobily.loyalty.service.model.ExtraInfo;
+import com.mobily.loyalty.service.model.LoyaltyInfoRequest;
+import com.mobily.loyalty.service.model.LoyaltyInfoResponse;
+import com.mobily.loyalty.service.model.MasterResponse;
+import com.mobily.loyalty.service.resourcebundle.Locales;
+import com.mobily.loyalty.service.resourcebundle.LocalizedMessageService;
+import com.mobily.loyalty.service.serviceclient.ServiceClient;
+import com.mobily.loyalty.service.serviceclient.ServiceResponse;
+import com.mobily.loyalty.service.utils.DateUtil;
+
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * This class provides the Loyalty Information operations.
+ *    1. Once Request is received, data is validated and if failed returns 400 status code
+ *    2. Builds the service request to consume Data Power LoyaltyService
+ *    3. Processes the Data Power Service Response
+ *    4. Returns response back to client
+ *    
+ * @author Mobily Info Tech (MIT)
+ *
+ */
+@Service
+<span class="fc" id="L50">@Slf4j</span>
+<span class="fc" id="L51">public class LoyaltyInfoService extends BaseService{</span>
+
+	@Autowired
+	private ServiceClient serviceClient;
+	
+	@Autowired
+	private AppConfigurationLoader appConfigurationLoader;
+	
+	/** journey name **/
+	private final static String JOURNEY=&quot;loyalty&quot;;
+	
+	/** operation name **/
+	private final static String JOURNEY_OPERATION=&quot;loyalty-inquiry&quot;;
+	
+	@Autowired
+	private LocalizedMessageService localizedMessageService;
+		
+	/**
+	 * queries for loyalty information with DP services
+	 * @param msidsn
+	 * @return
+	 * @throws ResourceNotFoundException
+	 * @throws InternalServerErrorException
+	 * @throws InvalidRequestException
+	 */
+	public Object getLoyaltyInformation(LoyaltyInfoRequest loyaltyInfoRequest, Map&lt;String,String&gt; hashMapHeaders) throws ResourceNotFoundException,InternalServerException,InvalidRequestException,Exception{
+<span class="fc" id="L77">		log.info(&quot; About to query for Loyalty Information from Data Power service &quot;+MDC.get(APIConstants.CORRELATION_ID_HEADER_KEY));				</span>
+<span class="fc" id="L78">		validate(JOURNEY_OPERATION,loyaltyInfoRequest,hashMapHeaders);	</span>
+<span class="fc" id="L79">		ServiceResponse serviceResponse = fetchLoyaltyInfoFromDP(loyaltyInfoRequest,hashMapHeaders);</span>
+		/** Span newSpan = this.tracer.nextSpan().name(&quot;calculateTax&quot;);
+		Span span = tracer.currentSpan();
+		log.info(&quot; SPAN ID IS &quot;+span.toString());
+		log.info(&quot;Trace ID {}&quot;, span.context().spanId());
+	    log.info(&quot;Span ID {}&quot;, span.context().traceId());
+	    **/
+<span class="fc" id="L86">		MDC.put(&quot;SERVICE_NAME&quot;, &quot;LOYALTY_INQUIRY&quot;);</span>
+<span class="fc" id="L87">		return buildLoyaltyInquiryDPResponse(serviceResponse);</span>
+	}
+	
+	
+	/**
+	 * builds Data Power Service Response
+	 * @param serviceResponse
+	 * @return
+	 */
+	private Object buildLoyaltyInquiryDPResponse(ServiceResponse serviceResponse) throws InternalServerException {
+				
+<span class="pc bpc" id="L98" title="2 of 4 branches missed.">		if(!ObjectUtils.isEmpty(serviceResponse) &amp;&amp; serviceResponse.getHttpStatusCode()==200) {					</span>
+<span class="fc" id="L99">			validateResponseData(JOURNEY_OPERATION,serviceResponse.getResponsePayload());			</span>
+<span class="fc" id="L100">			return buildLoyaltyInquirySuccessResponse(serviceResponse.getResponsePayload());										</span>
+		}				
+<span class="nc" id="L102">		InternalServerException internalServerException =  new InternalServerException(MessageConstants.MAPI_500, &quot;&quot;);				</span>
+<span class="nc" id="L103">		throw internalServerException;		</span>
+	}
+	
+	/**
+	 * build success response
+	 * @param dpSuccessPayload
+	 * @return
+	 * @throws InternalServerException
+	 */
+	private Object buildLoyaltyInquirySuccessResponse(String dpSuccessPayload) throws InternalServerException{
+<span class="fc" id="L113">		LoyaltyInfoResponse loyaltyInfoResponse = null;</span>
+<span class="fc" id="L114">		ObjectMapper objectMapper = null;</span>
+<span class="fc" id="L115">		LoyaltyInquiryResponse loyaltyInquiryResponse = null;</span>
+<span class="fc" id="L116">		MasterResponse masterResponse = null;</span>
+		
+		try {
+<span class="fc" id="L119">			masterResponse = new MasterResponse();</span>
+<span class="fc" id="L120">			loyaltyInfoResponse = new LoyaltyInfoResponse();</span>
+<span class="fc" id="L121">			objectMapper = new ObjectMapper();</span>
+<span class="fc" id="L122">			loyaltyInquiryResponse = objectMapper.readValue(dpSuccessPayload, LoyaltyInquiryResponse.class);</span>
+<span class="fc" id="L123">			loyaltyInfoResponse.setTransactionId(loyaltyInquiryResponse.getTransactionId());</span>
+<span class="fc" id="L124">			loyaltyInfoResponse.setPointsLeft(loyaltyInquiryResponse.getPointsLeft());</span>
+<span class="fc" id="L125">			loyaltyInfoResponse.setRedemptionTransLimit(loyaltyInquiryResponse.getRedemptionTransLimit());</span>
+<span class="fc" id="L126">			loyaltyInfoResponse.setStatusCode(loyaltyInquiryResponse.getStatusCode());</span>
+<span class="fc" id="L127">			loyaltyInfoResponse.setTotalEarnedPoints(loyaltyInquiryResponse.getTotalEarnedPoints());</span>
+<span class="fc" id="L128">			loyaltyInfoResponse.setTotalExpiredPoints(loyaltyInquiryResponse.getTotalExpiredPoints());</span>
+<span class="fc" id="L129">			loyaltyInfoResponse.setTotalRedeemedPoints(loyaltyInquiryResponse.getTotalRedeemedPoints());		</span>
+<span class="nc" id="L130">		}catch(Exception e) {</span>
+<span class="nc" id="L131">			log.error(&quot; Error while processing response from Data Power Service &quot;,e);</span>
+<span class="nc" id="L132">			throw new InternalServerException(MessageConstants.MAPI_500, &quot;&quot;);</span>
+<span class="fc" id="L133">		}</span>
+		
+<span class="fc" id="L135">		return loyaltyInfoResponse;</span>
+	}
+		
+	/**
+	 * fetches the loyalty information from DP
+	 * @param loyaltyInfoRequest
+	 * @param hashMapHeaders
+	 * @throws ResourceNotFoundException
+	 * @throws InternalServerException
+	 * @throws InvalidRequestException
+	 */
+	private ServiceResponse fetchLoyaltyInfoFromDP(LoyaltyInfoRequest loyaltyInfoRequest, Map&lt;String,String&gt; hashMapHeaders) throws ResourceNotFoundException,ResourceAlreadyExistsException,InternalServerException,InvalidRequestException,Exception{
+		
+		// Validate account number
+<span class="fc" id="L149">		boolean hasAccountNumber = false;</span>
+<span class="fc" id="L150">		List&lt;ExtraInfo&gt; lstExtraInfo = loyaltyInfoRequest.getExtraInfo();</span>
+<span class="pc bpc" id="L151" title="1 of 4 branches missed.">		if (lstExtraInfo == null || lstExtraInfo.isEmpty()) {</span>
+<span class="fc" id="L152">			throw new InvalidRequestException(MessageConstants.MAPI_400, &quot;Account number is required&quot;);</span>
+		}
+		
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">		for(ExtraInfo extraInfo : lstExtraInfo) {</span>
+<span class="pc bpc" id="L156" title="2 of 4 branches missed.">			if(!ObjectUtils.isEmpty(extraInfo.getKey()) &amp;&amp; extraInfo.getKey().equalsIgnoreCase(MessageConstants.ACCOUNT_NUMBER)){</span>
+<span class="pc bpc" id="L157" title="2 of 4 branches missed.">				if(ObjectUtils.isEmpty(extraInfo.getValue()) || extraInfo.getValue().trim().isEmpty()) {</span>
+<span class="nc" id="L158">					throw new InvalidRequestException(MessageConstants.MAPI_400, &quot;Account number is required&quot;);</span>
+				}
+<span class="fc" id="L160">				hasAccountNumber = true;</span>
+<span class="fc" id="L161">				break;</span>
+			}
+<span class="nc" id="L163">		}</span>
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">		if(!hasAccountNumber) {</span>
+<span class="nc" id="L165">			throw new InvalidRequestException(MessageConstants.MAPI_400, &quot;Account number is required&quot;);</span>
+		}
+
+		// Validate language
+<span class="pc bpc" id="L169" title="2 of 4 branches missed.">		if(ObjectUtils.isEmpty(loyaltyInfoRequest.getLanguage()) || loyaltyInfoRequest.getLanguage().trim().isEmpty()) {</span>
+<span class="nc" id="L170">			throw new InvalidRequestException(MessageConstants.MAPI_400, &quot;Language is required&quot;);</span>
+		}
+<span class="fc bfc" id="L172" title="All 2 branches covered.">		if(loyaltyInfoRequest.getLanguage().length() != 2) {</span>
+<span class="fc" id="L173">			throw new InvalidRequestException(MessageConstants.MAPI_400, &quot;Language must be 2 characters&quot;);</span>
+		}
+
+<span class="fc" id="L176">		String loyaltyServiceDPURL = appConfigurationLoader.getLoyaltyInquiryDPURL();</span>
+<span class="fc" id="L177">		ObjectMapper objectMapper = new ObjectMapper();</span>
+<span class="fc" id="L178">		ServiceResponse serviceResponse = null;		</span>
+<span class="fc" id="L179">		LoyaltyInquiryRequest loyaltyInquiryRequest = new LoyaltyInquiryRequest();</span>
+		
+<span class="fc" id="L181">		loyaltyInquiryRequest.setVersion(loyaltyInfoRequest.getVersion());</span>
+<span class="fc" id="L182">		loyaltyInquiryRequest.setTransactionId(hashMapHeaders.get(APIConstants.CORRELATION_ID_HEADER_KEY));</span>
+<span class="fc" id="L183">		loyaltyInquiryRequest.setLanguage(loyaltyInfoRequest.getLanguage());</span>
+		
+<span class="fc bfc" id="L185" title="All 2 branches covered.">		for(ExtraInfo extraInfo:lstExtraInfo) {</span>
+<span class="pc bpc" id="L186" title="2 of 4 branches missed.">			if(!ObjectUtils.isEmpty(extraInfo.getKey()) &amp;&amp; extraInfo.getKey().equalsIgnoreCase(MessageConstants.ACCOUNT_NUMBER)){</span>
+<span class="fc" id="L187">				loyaltyInquiryRequest.setMsisdn(extraInfo.getValue());</span>
+			}
+<span class="fc" id="L189">		}</span>
+<span class="fc" id="L190">		loyaltyInquiryRequest.setSessionId(&quot;&quot;);</span>
+<span class="fc" id="L191">		loyaltyInquiryRequest.setUserName(MessageConstants.USER_NAME);</span>
+<span class="fc" id="L192">		loyaltyInquiryRequest.setAppId(MessageConstants.APP_ID);</span>
+<span class="fc" id="L193">		loyaltyInquiryRequest.setDeviceId(MessageConstants.DEVICE_ID);</span>
+<span class="fc" id="L194">		loyaltyInquiryRequest.setRequestDate(DateUtil.getCurrentDate());</span>
+<span class="fc" id="L195">		loyaltyInquiryRequest.setLanguage(Locales.EN);</span>
+		
+<span class="pc bpc" id="L197" title="1 of 2 branches missed.">		if(!ObjectUtils.isEmpty(System.getenv(APIConstants.DP_SERVICE_URL))) {</span>
+<span class="nc" id="L198">			loyaltyServiceDPURL = System.getenv(APIConstants.DP_SERVICE_URL);</span>
+		}
+<span class="fc" id="L200">		log.info(&quot; DP Service URL is &quot;+loyaltyServiceDPURL);</span>
+<span class="fc" id="L201">		serviceResponse = serviceClient.execute(loyaltyServiceDPURL, HttpMethod.POST, objectMapper.writeValueAsString(loyaltyInquiryRequest), populateHttpHeaders(hashMapHeaders));</span>
+		
+		// Check for service errors
+<span class="pc bpc" id="L204" title="1 of 4 branches missed.">		if (serviceResponse != null &amp;&amp; serviceResponse.getHttpStatusCode() &gt;= 500) {</span>
+<span class="fc" id="L205">			throw new InternalServerException(MessageConstants.MAPI_500, &quot;Service error occurred&quot;);</span>
+		}
+		
+<span class="fc" id="L208">		return serviceResponse;				</span>
+	}
+		
+	/**
+	 * populates the headers
+	 * @param mapHeaders
+	 * @return
+	 */
+	private HttpHeaders populateHttpHeaders(Map&lt;String,String&gt; mapHeaders) {
+<span class="fc" id="L217">		String key=&quot;&quot;;</span>
+<span class="fc" id="L218">		HttpHeaders httpHeaders = new HttpHeaders();</span>
+<span class="fc" id="L219">		Set&lt;String&gt; enumKeys = mapHeaders.keySet();		</span>
+<span class="fc" id="L220">		enumKeys.forEach(c-&gt;httpHeaders.add(c, mapHeaders.get(c)));</span>
+<span class="fc" id="L221">		httpHeaders.add(ServiceConstants.CONTENT_TYPE_KEY, ServiceConstants.CONTENT_TYPE_APPLICATION_JSON);	</span>
+<span class="fc" id="L222">		httpHeaders.add(APIConstants.X_USERID_HEADER_KEY, APIConstants.X_USERID_KEY_VALUE);	</span>
+<span class="fc" id="L223">		return httpHeaders;</span>
+	}	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

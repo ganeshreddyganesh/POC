@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServiceClient.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">loyalty-service</a> &gt; <a href="index.source.html" class="el_package">com.mobily.loyalty.service.serviceclient</a> &gt; <span class="el_source">ServiceClient.java</span></div><h1>ServiceClient.java</h1><pre class="source lang-java linenums">package com.mobily.loyalty.service.serviceclient;
+
+import org.apache.http.HttpStatus;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
+
+import com.mobily.loyalty.service.constants.APIConstants;
+import com.mobily.loyalty.service.constants.ServiceConstants;
+import com.mobily.loyalty.service.exceptions.InternalServerException;
+
+import lombok.extern.slf4j.Slf4j;
+
+
+/**
+ * This class defines the methods to consumes the services like Data Power Service
+ * @author Mobily Info Tech (MIT)
+ *
+ */
+@Service
+<span class="fc" id="L27">@Slf4j</span>
+<span class="nc" id="L28">public class ServiceClient {</span>
+	/**
+	 * consumes the service method
+	 * @param serviceURL
+	 * @param httpMethod
+	 * @param requestPayload
+	 * @param httpHeaders
+	 * @return
+	 * @throws Exception
+	 */
+	public ServiceResponse execute(String serviceURL,HttpMethod httpMethod, String requestPayload,HttpHeaders httpHeaders) throws HttpClientErrorException,Exception {
+<span class="nc" id="L39">		ServiceResponse serviceResponse = null;</span>
+		
+		try {
+<span class="nc" id="L42">			HttpEntity&lt;String&gt; request = new HttpEntity&lt;String&gt;(requestPayload,httpHeaders);</span>
+			
+<span class="nc" id="L44">		    ResponseEntity&lt;String&gt; responseEntity = getRestTemplate().exchange(serviceURL, httpMethod, request, String.class); </span>
+		   
+<span class="nc bnc" id="L46" title="All 2 branches missed.">		    if(ObjectUtils.isEmpty(responseEntity)) {</span>
+<span class="nc" id="L47">		    	 throw new InternalServerException(&quot;&quot;,&quot;Error occurred while consuming the service &quot;);</span>
+		     }
+<span class="nc" id="L49">		 	serviceResponse = new ServiceResponse();</span>
+<span class="nc" id="L50">			serviceResponse.setHttpStatusCode(responseEntity.getStatusCode().value());</span>
+<span class="nc" id="L51">			serviceResponse.setResponsePayload(responseEntity.getBody());</span>
+<span class="nc" id="L52">		}catch(HttpClientErrorException httpClientErrorException) {</span>
+<span class="nc" id="L53">			serviceResponse = new ServiceResponse();</span>
+<span class="nc" id="L54">			serviceResponse.setHttpStatusCode(httpClientErrorException.getRawStatusCode());</span>
+<span class="nc" id="L55">			return serviceResponse;</span>
+<span class="nc" id="L56">		}catch(Exception exception) {</span>
+<span class="nc" id="L57">			serviceResponse = new ServiceResponse();</span>
+<span class="nc" id="L58">			serviceResponse.setHttpStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);</span>
+<span class="nc" id="L59">			return serviceResponse;</span>
+<span class="nc" id="L60">		}</span>
+<span class="nc" id="L61">		return serviceResponse;</span>
+	}
+	
+	/**
+	 * returns the RESTTemplate
+	 * @return
+	 */
+	private RestTemplate getRestTemplate() {
+<span class="nc" id="L69">		return new RestTemplate();</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

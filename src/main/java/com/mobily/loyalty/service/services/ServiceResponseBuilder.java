@@ -42,4 +42,23 @@ public class ServiceResponseBuilder {
 		successStatus.setSourceMessage("");
 		return successStatus;
 	}
+
+	public MasterResponse buildSuccessResponse(Object data) {
+		MasterResponse response = new MasterResponse();
+		Status status = new Status();
+		status.setCode("200");
+		status.setMessageEn("Success");
+		response.setStatus(status);
+		response.setData(data);
+		return response;
+	}
+	
+	public MasterResponse buildErrorResponse(String code, String message) {
+		MasterResponse response = new MasterResponse();
+		Status status = new Status();
+		status.setCode(code);
+		status.setMessageEn(message);
+		response.setStatus(status);
+		return response;
+	}
 }

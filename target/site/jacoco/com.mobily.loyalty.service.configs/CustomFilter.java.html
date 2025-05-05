@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CustomFilter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">loyalty-service</a> &gt; <a href="index.source.html" class="el_package">com.mobily.loyalty.service.configs</a> &gt; <span class="el_source">CustomFilter.java</span></div><h1>CustomFilter.java</h1><pre class="source lang-java linenums">package com.mobily.loyalty.service.configs;
+
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.UUID;
+
+import org.apache.http.HttpStatus;
+import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
+
+import com.mobily.loyalty.service.constants.APIConstants;
+import com.mobily.loyalty.service.constants.ServiceConstants;
+import com.mobily.loyalty.service.exceptions.InternalServerException;
+import com.mobily.loyalty.service.exceptions.SessionTimeoutException;
+import com.mobily.loyalty.service.exceptions.UnauthorizedAccessException;
+import com.mobily.loyalty.service.services.UserSessionService;
+
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+
+
+/**
+ * This is a custom filter for all service requests.
+ * @author Mobily Info Tech (MIT)
+ *
+ */
+@Component
+<span class="nc" id="L36">@Slf4j</span>
+<span class="nc" id="L37">public class CustomFilter implements Filter {	</span>
+
+	/** user session service **/
+	@Autowired
+	private UserSessionService userSessionService;
+  
+     /**
+      * Filters the Request Data
+      */
+  	 @Override	
+	  public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,FilterChain chain) throws IOException, ServletException {
+	  
+<span class="nc" id="L49">		  HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;</span>
+<span class="nc" id="L50">		  HttpServletResponse httpServletResponse = (HttpServletResponse)servletResponse;</span>
+<span class="nc" id="L51">		  Enumeration enum1=httpServletRequest.getHeaderNames();</span>
+		 
+<span class="nc bnc" id="L53" title="All 4 branches missed.">		  if(!ObjectUtils.isEmpty(httpServletRequest.getRequestURI()) &amp;&amp; !httpServletRequest.getRequestURI().startsWith(APIConstants.PUBLIC_CONTEXT)) {			   </span>
+<span class="nc" id="L54">			  String sessionToken = httpServletRequest.getHeader(ServiceConstants.AUTHORIZATION);</span>
+			  
+			
+<span class="nc bnc" id="L57" title="All 2 branches missed.">			  if(ObjectUtils.isEmpty(sessionToken)) {</span>
+<span class="nc" id="L58">				  httpServletResponse.setStatus(HttpStatus.SC_UNAUTHORIZED);</span>
+			  }
+<span class="nc bnc" id="L60" title="All 2 branches missed.">			  if(sessionToken.startsWith(ServiceConstants.BEARER)) {</span>
+<span class="nc" id="L61">				  sessionToken = sessionToken.replace(ServiceConstants.BEARER, &quot;&quot;);</span>
+			  }
+			  try {				  			
+<span class="nc" id="L64">				  userSessionService.isUserSessionValid(sessionToken);</span>
+<span class="nc" id="L65">			  }catch(InternalServerException internalServerException) {</span>
+<span class="nc" id="L66">				  httpServletResponse.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);</span>
+<span class="nc" id="L67">			  }catch(UnauthorizedAccessException unauthorizedAccessException) {</span>
+<span class="nc" id="L68">				  httpServletResponse.setStatus(HttpStatus.SC_UNAUTHORIZED);</span>
+<span class="nc" id="L69">			  }catch(SessionTimeoutException sessionTimeoutException) {</span>
+<span class="nc" id="L70">				  httpServletResponse.setStatus(HttpStatus.SC_UNAUTHORIZED);</span>
+<span class="nc" id="L71">			  }catch(Exception exception) {</span>
+<span class="nc" id="L72">				  httpServletResponse.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);</span>
+<span class="nc" id="L73">			  }</span>
+		  }
+<span class="nc bnc" id="L75" title="All 2 branches missed.">		  if(!ObjectUtils.isEmpty(httpServletResponse.getHeader(APIConstants.CORRELATION_ID_HEADER_KEY))){			  </span>
+<span class="nc" id="L76">			  httpServletResponse.setHeader(APIConstants.CORRELATION_ID_HEADER_KEY,httpServletResponse.getHeader(APIConstants.CORRELATION_ID_HEADER_KEY)); </span>
+			
+		  }else {
+<span class="nc" id="L79">			  httpServletResponse.setHeader(APIConstants.CORRELATION_ID_HEADER_KEY,UUID.randomUUID().toString());</span>
+<span class="nc" id="L80">			  log.info(&quot; Request Received withour CORRELATION ID, set to &quot;+httpServletResponse.getHeader(APIConstants.CORRELATION_ID_HEADER_KEY)); </span>
+		  }
+		  
+<span class="nc" id="L83">		  MDC.put(APIConstants.CORRELATION_ID_HEADER_KEY,httpServletResponse.getHeader(APIConstants.CORRELATION_ID_HEADER_KEY));</span>
+<span class="nc" id="L84">		  httpServletResponse.setHeader(&quot;Content-Type&quot;,&quot;application/json&quot;);</span>
+<span class="nc" id="L85">          httpServletResponse.setHeader(ServiceConstants.ACCESS_CONTROL_ALLOW_ORIGIN_KEY, ServiceConstants.ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);</span>
+<span class="nc" id="L86">          httpServletResponse.setHeader(ServiceConstants.ACCESS_CONTROL_ALLOW_METHODS_KEY, ServiceConstants.ACCESS_CONTROL_ALLOW_METHODS_VALUE);</span>
+<span class="nc" id="L87">          httpServletResponse.setHeader(ServiceConstants.ACCESS_CONTROL_ALLOW_HEADERS_KEY, ServiceConstants.ACCESS_CONTROL_ALLOW_HEADERS_VALUE);</span>
+<span class="nc" id="L88">          httpServletResponse.setHeader(ServiceConstants.ACCESS_CONTROL_ALLOW_CREDENTIALS_KEY,ServiceConstants.ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE);</span>
+<span class="nc" id="L89">		  chain.doFilter(httpServletRequest, httpServletResponse);</span>
+<span class="nc" id="L90">		  MDC.clear();</span>
+<span class="nc" id="L91">		  log.info(&quot; Returning the response  &quot;);</span>
+<span class="nc" id="L92">	 }	 </span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
